@@ -1,0 +1,71 @@
+/* Estilos personalizados - Agenda de Contactos */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+}
+
+/* Titulo de la pagina */
+.titulo-pagina {
+    color: #0d6efd;
+    margin-bottom: 5px;
+}
+
+/* Tarjeta de resumen (contadores) */
+.card-contador {
+    border-radius: 8px;
+    text-align: center;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+/* Tarjeta de cada contacto */
+.card-contacto {
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
+
+/* Tarjeta marcada como favorita */
+.card-favorita {
+    border: 2px solid #ffc107;
+}
+
+/* Avatar con las iniciales del contacto */
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #0d6efd;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+/* Colores segun la categoria */
+.avatar-Personal { background-color: #0d6efd; }
+.avatar-Trabajo  { background-color: #198754; }
+.avatar-Familia  { background-color: #dc3545; }
+.avatar-Otro     { background-color: #6c757d; }
+
+/* Texto de informacion del contacto */
+.info-contacto p {
+    margin-bottom: 2px;
+    font-size: 0.9rem;
+}
+
+/* Responsive para pantallas pequenas */
+@media (max-width: 576px) {
+    .botones-accion {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        width: 100%;
+    }
+    .botones-accion .btn {
+        width: 100%;
+    }
+}
