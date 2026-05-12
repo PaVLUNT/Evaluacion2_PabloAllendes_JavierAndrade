@@ -1,15 +1,6 @@
-// ===================================
-// app.js - Agenda de Contactos
-// ===================================
-
-// Variable para guardar el ID del contacto que se va a eliminar
 var idAEliminar = null;
 
-// ===================================
-// CARGAR NAV Y FOOTER
-// ===================================
 function cargarComponentes() {
-    // Si la pagina esta dentro de /pages necesito subir un nivel
     var ruta = window.location.pathname;
     var prefijo = ruta.includes("/pages/") ? "../" : "";
 
@@ -30,11 +21,6 @@ function cargarComponentes() {
         });
 }
 
-// ===================================
-// LOCALSTORAGE
-// ===================================
-
-// Obtener contactos guardados
 function obtenerContactos() {
     var datos = localStorage.getItem("contactos");
     if (datos == null) {
@@ -43,14 +29,9 @@ function obtenerContactos() {
     return JSON.parse(datos);
 }
 
-// Guardar contactos
 function guardarEnStorage(arreglo) {
     localStorage.setItem("contactos", JSON.stringify(arreglo));
 }
-
-// ===================================
-// VALIDACIONES
-// ===================================
 
 function validarNombre(nombre) {
     if (nombre.trim() == "") {
@@ -60,13 +41,11 @@ function validarNombre(nombre) {
 }
 
 function validarEmail(email) {
-    // Verifico que tenga @ y un punto despues
     var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
 }
 
 function validarTelefono(telefono) {
-    // Solo numeros
     var regex = /^[0-9]+$/;
     return regex.test(telefono);
 }
@@ -78,7 +57,6 @@ function validarFormulario() {
 
     var hayError = false;
 
-    // Valido nombre
     if (!validarNombre(nombre)) {
         document.getElementById("error-nombre").style.display = "block";
         hayError = true;
@@ -86,7 +64,6 @@ function validarFormulario() {
         document.getElementById("error-nombre").style.display = "none";
     }
 
-    // Valido email
     if (!validarEmail(email)) {
         document.getElementById("error-email").style.display = "block";
         hayError = true;
@@ -94,7 +71,6 @@ function validarFormulario() {
         document.getElementById("error-email").style.display = "none";
     }
 
-    // Valido telefono
     if (telefono.trim() == "" || !validarTelefono(telefono)) {
         document.getElementById("error-telefono").style.display = "block";
         hayError = true;
@@ -105,11 +81,6 @@ function validarFormulario() {
     return !hayError;
 }
 
-// ===================================
-// CRUD - AGREGAR, EDITAR, ELIMINAR
-// ===================================
-
-// Preparar formulario para contacto nuevo
 function prepararNuevo() {
     document.getElementById("titulo-modal").textContent  = "Agregar Contacto";
     document.getElementById("input-nombre").value        = "";
@@ -118,15 +89,12 @@ function prepararNuevo() {
     document.getElementById("input-categoria").value     = "Personal";
     document.getElementById("input-id").value            = "";
 
-    // Oculto errores
     document.getElementById("error-nombre").style.display   = "none";
     document.getElementById("error-email").style.display    = "none";
     document.getElementById("error-telefono").style.display = "none";
 }
 
-// Guardar (nuevo o editado)
 function guardarContacto() {
-    // Si hay errores no guardo
     if (!validarFormulario()) {
         return;
     }
@@ -140,7 +108,6 @@ function guardarContacto() {
     var contactos = obtenerContactos();
 
     if (id == "") {
-        // Contacto nuevo
         var nuevo = {
             id:        Date.now(),
             nombre:    nombre,
@@ -151,7 +118,6 @@ function guardarContacto() {
         };
         contactos.push(nuevo);
     } else {
-        // Editar contacto existente
         for (var i = 0; i < contactos.length; i++) {
             if (contactos[i].id == id) {
                 contactos[i].nombre    = nombre;
@@ -165,16 +131,13 @@ function guardarContacto() {
 
     guardarEnStorage(contactos);
 
-    // Cerrar modal
     var modal = bootstrap.Modal.getInstance(document.getElementById("modalContacto"));
     modal.hide();
 
-    // Actualizar pantalla
     renderizarContactos(contactos);
     actualizarContadores(contactos);
 }
 
-// Cargar datos en el formulario para editar
 function editarContacto(id) {
     var contactos = obtenerContactos();
     var contacto  = null;
@@ -203,7 +166,6 @@ function editarContacto(id) {
     modal.show();
 }
 
-// Mostrar modal de confirmacion para eliminar
 function prepararEliminar(id) {
     var contactos = obtenerContactos();
 
@@ -219,7 +181,6 @@ function prepararEliminar(id) {
     modal.show();
 }
 
-// Confirmar y eliminar
 function confirmarEliminar() {
     var contactos    = obtenerContactos();
     var nuevo        = [];
@@ -240,7 +201,6 @@ function confirmarEliminar() {
     actualizarContadores(nuevo);
 }
 
-// Marcar o desmarcar favorito
 function toggleFavorito(id) {
     var contactos = obtenerContactos();
 
@@ -256,11 +216,6 @@ function toggleFavorito(id) {
     actualizarContadores(contactos);
 }
 
-// ===================================
-// RENDERIZADO DEL DOM
-// ===================================
-
-// Obtener las iniciales del nombre
 function obtenerIniciales(nombre) {
     var partes = nombre.trim().split(" ");
     if (partes.length >= 2) {
@@ -269,7 +224,6 @@ function obtenerIniciales(nombre) {
     return partes[0][0].toUpperCase();
 }
 
-// Crear el HTML de una tarjeta de contacto
 function crearTarjetaHTML(contacto) {
     var iniciales    = obtenerIniciales(contacto.nombre);
     var textoFav     = contacto.favorito ? "Quitar favorito" : "Favorito";
@@ -280,10 +234,8 @@ function crearTarjetaHTML(contacto) {
     html += '<div class="' + claseTarjeta + '">';
     html += '<div class="card-body d-flex gap-3 align-items-start">';
 
-    // Avatar
     html += '<div class="' + claseAvatar + '">' + iniciales + '</div>';
 
-    // Info
     html += '<div class="info-contacto flex-grow-1">';
     html += '<p class="fw-bold mb-1">' + contacto.nombre + '</p>';
     html += '<p>' + contacto.email + '</p>';
@@ -291,7 +243,6 @@ function crearTarjetaHTML(contacto) {
     html += '<span class="badge bg-secondary">' + contacto.categoria + '</span>';
     html += '</div>';
 
-    // Botones
     html += '<div class="botones-accion d-flex flex-column gap-1">';
     html += '<button class="btn btn-sm btn-outline-warning" onclick="toggleFavorito(' + contacto.id + ')">' + textoFav + '</button>';
     html += '<button class="btn btn-sm btn-outline-primary" onclick="editarContacto(' + contacto.id + ')">Editar</button>';
@@ -303,7 +254,6 @@ function crearTarjetaHTML(contacto) {
     return html;
 }
 
-// Mostrar contactos en la pagina
 function renderizarContactos(arreglo) {
     var contenedor   = document.getElementById("lista-contactos");
     var sinContactos = document.getElementById("sin-contactos");
@@ -322,7 +272,6 @@ function renderizarContactos(arreglo) {
     }
 }
 
-// Actualizar los numeros de los contadores
 function actualizarContadores(arreglo) {
     document.getElementById("total-contactos").textContent = arreglo.length;
 
@@ -334,10 +283,6 @@ function actualizarContadores(arreglo) {
     }
     document.getElementById("total-favoritos").textContent = favoritos;
 }
-
-// ===================================
-// BUSQUEDA
-// ===================================
 
 function buscarContacto() {
     var texto     = document.getElementById("input-buscar").value.toLowerCase();
@@ -360,9 +305,6 @@ function mostrarTodos() {
     renderizarContactos(contactos);
 }
 
-// ===================================
-// FAVORITOS (usado en favoritos.html)
-// ===================================
 function mostrarFavoritos() {
     var datos     = localStorage.getItem("contactos");
     var contactos = datos ? JSON.parse(datos) : [];
@@ -401,19 +343,14 @@ function mostrarFavoritos() {
     }
 }
 
-// ===================================
-// INICIO
-// ===================================
 function iniciarApp() {
     cargarComponentes();
 
-    // Si estoy en favoritos.html cargo los favoritos
     if (document.getElementById("lista-favoritos")) {
         mostrarFavoritos();
         return;
     }
 
-    // Si estoy en index.html cargo los contactos
     var contactos = obtenerContactos();
     renderizarContactos(contactos);
     actualizarContadores(contactos);
